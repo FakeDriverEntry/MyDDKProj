@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "synchronous_test", "synchronous_test\synchronous_test.vcproj", "{0EFC4FD5-859B-4F47-B4DA-EE40E074DFA1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "synchronous", "synchronous\fast_mutex.vcproj", "{B4999513-A8C5-4C21-AD31-13B7669EB42E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0EFC4FD5-859B-4F47-B4DA-EE40E074DFA1}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0EFC4FD5-859B-4F47-B4DA-EE40E074DFA1}.Debug|Win32.Build.0 = Debug|Win32
+		{0EFC4FD5-859B-4F47-B4DA-EE40E074DFA1}.Release|Win32.ActiveCfg = Release|Win32
+		{0EFC4FD5-859B-4F47-B4DA-EE40E074DFA1}.Release|Win32.Build.0 = Release|Win32
+		{B4999513-A8C5-4C21-AD31-13B7669EB42E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B4999513-A8C5-4C21-AD31-13B7669EB42E}.Debug|Win32.Build.0 = Debug|Win32
+		{B4999513-A8C5-4C21-AD31-13B7669EB42E}.Release|Win32.ActiveCfg = Release|Win32
+		{B4999513-A8C5-4C21-AD31-13B7669EB42E}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

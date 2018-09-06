@@ -1,0 +1,7 @@
+TARGETNAME=synchronous
+TARGETTYPE=DRIVER
+
+
+SOURCES=main.c \
+		mutex.c
+
