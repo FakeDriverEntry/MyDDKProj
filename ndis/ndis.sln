@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "driverentry", "driverentry\driverentry.vcproj", "{68680C3D-2CA0-48FD-9815-EF733293663D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ndis_passthru", "ndis_passthru\ndis_passthru.vcproj", "{E2243639-5DFE-4D70-BBF4-8E4AE3FBDACA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ndisprot", "ndisprot\ndisprot.vcproj", "{FAD029D2-A3D0-48FF-AC4C-8C82FE358899}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ndisprot_test", "ndisprot_test\ndisprot_test.vcproj", "{CB04B56D-87B6-406A-B25A-DFA25D0CB68E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{68680C3D-2CA0-48FD-9815-EF733293663D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{68680C3D-2CA0-48FD-9815-EF733293663D}.Debug|Win32.Build.0 = Debug|Win32
+		{68680C3D-2CA0-48FD-9815-EF733293663D}.Release|Win32.ActiveCfg = Release|Win32
+		{68680C3D-2CA0-48FD-9815-EF733293663D}.Release|Win32.Build.0 = Release|Win32
+		{E2243639-5DFE-4D70-BBF4-8E4AE3FBDACA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E2243639-5DFE-4D70-BBF4-8E4AE3FBDACA}.Debug|Win32.Build.0 = Debug|Win32
+		{E2243639-5DFE-4D70-BBF4-8E4AE3FBDACA}.Release|Win32.ActiveCfg = Release|Win32
+		{E2243639-5DFE-4D70-BBF4-8E4AE3FBDACA}.Release|Win32.Build.0 = Release|Win32
+		{FAD029D2-A3D0-48FF-AC4C-8C82FE358899}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FAD029D2-A3D0-48FF-AC4C-8C82FE358899}.Debug|Win32.Build.0 = Debug|Win32
+		{FAD029D2-A3D0-48FF-AC4C-8C82FE358899}.Release|Win32.ActiveCfg = Release|Win32
+		{FAD029D2-A3D0-48FF-AC4C-8C82FE358899}.Release|Win32.Build.0 = Release|Win32
+		{CB04B56D-87B6-406A-B25A-DFA25D0CB68E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CB04B56D-87B6-406A-B25A-DFA25D0CB68E}.Debug|Win32.Build.0 = Debug|Win32
+		{CB04B56D-87B6-406A-B25A-DFA25D0CB68E}.Release|Win32.ActiveCfg = Release|Win32
+		{CB04B56D-87B6-406A-B25A-DFA25D0CB68E}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
