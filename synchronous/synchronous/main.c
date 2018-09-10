@@ -6,6 +6,7 @@ typedef struct _DEVICE_EXTENSION
 	UNICODE_STRING		ustrDevName;
 	UNICODE_STRING		ustrSymName;
 	LIST_ENTRY			PendingIrpHead;
+	KSPIN_LOCK			spinLock;
 }DEVICE_EXTENSION, *PDEVICE_EXTENSION;
 
 typedef	struct _PENDING_IRP_ENTRY
@@ -79,6 +80,8 @@ NTSTATUS	CreateDevice(PDRIVER_OBJECT pDriverObject)
 
 	InitializeListHead(&pDevExt->PendingIrpHead);
 
+	KeInitializeSpinLock(&pDevExt->spinLock);
+
 	return status;
 }
 
@@ -140,15 +143,23 @@ NTSTATUS	MyReadDispatch(PDEVICE_OBJECT pDevObj, PIRP pIrp)
 {
 	PDEVICE_EXTENSION		pDevExt;
 	PPENDING_IRP_ENTRY		pIrpEntry = NULL;
+	KSPIN_LOCK				spinLock;
+	KIRQL					oldIrql;
 
 	pDevExt = pDevObj->DeviceExtension;
+
+	spinLock = pDevExt->spinLock;
 
 	pIrpEntry = ExAllocatePool(PagedPool, sizeof(PENDING_IRP_ENTRY));
 	RtlZeroMemory(pIrpEntry, sizeof(PENDING_IRP_ENTRY));
 
 	pIrpEntry->pIrp = pIrp;
 
+	KeAcquireSpinLock(&pDevExt->spinLock, &oldIrql);
+
 	InsertTailList(&pDevExt->PendingIrpHead, &pIrpEntry->LinkList);
+
+	KeReleaseSpinLock(&pDevExt->spinLock, oldIrql);
 
 	IoMarkIrpPending(pIrp);
 
@@ -170,6 +181,7 @@ NTSTATUS	DriverEntry(PDRIVER_OBJECT pDriverObject, PUNICODE_STRING pRegPath)
 
 	pDriverObject->MajorFunction[IRP_MJ_DEVICE_CONTROL] = MyDevIoCtrlDispatch;
 	pDriverObject->MajorFunction[IRP_MJ_READ] = MyReadDispatch;
+	pDriverObject->MajorFunction[IRP_MJ_CLEANUP] = MyCleanupDispatch;
 
 	status = CreateDevice(pDriverObject);
 

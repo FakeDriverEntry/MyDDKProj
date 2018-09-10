@@ -24,6 +24,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	KernelMutexObjectTest();
 
+	AsynchronousTest();
+
 	printf("press any key to uninstall device...\n");
 	_getch();
 
