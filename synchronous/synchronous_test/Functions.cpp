@@ -90,3 +90,48 @@ void	AsynchronousTest()
 	_getch();
 	CloseHandle(hDevice);
 }
+
+void	DpcTest()
+{
+	BOOL	bRet;
+	HANDLE	hDevice;
+	DWORD	dwRet;
+
+	printf("press any key to start dpc timer ...\n");
+	_getch();
+
+	hDevice = CreateFile(L"\\\\.\\synchronous",
+		GENERIC_READ|GENERIC_WRITE,
+		FILE_SHARE_READ|FILE_SHARE_WRITE,
+		NULL,
+		OPEN_EXISTING,
+		0,
+		NULL);
+
+	if (INVALID_HANDLE_VALUE == hDevice)
+	{
+		printf("CreateFile failed : %d\n", GetLastError());
+		return;
+	}
+
+	bRet = DeviceIoControl(hDevice, IOCTRL_START_TIMER, NULL, 0, NULL, 0, &dwRet, NULL);
+
+	if (!bRet)
+	{
+		printf("DeviceIoControl failed : %d\n", GetLastError());
+		return ;
+	}
+
+	printf("press any key to stop dpc timer ...\n");
+	_getch();
+
+	bRet = DeviceIoControl(hDevice, IOCTRL_STOP_TIMER, NULL, 0, NULL, 0, &dwRet, NULL);
+
+	if (!bRet)
+	{
+		printf("DeviceIoControl failed : %d\n", GetLastError());
+		return ;
+	}
+
+	CloseHandle(hDevice);
+}

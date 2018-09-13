@@ -1,14 +1,5 @@
 #include "precomp.h"
 
-typedef struct _DEVICE_EXTENSION
-{
-	PDEVICE_OBJECT		pDevObj;
-	UNICODE_STRING		ustrDevName;
-	UNICODE_STRING		ustrSymName;
-	LIST_ENTRY			PendingIrpHead;
-	KSPIN_LOCK			spinLock;
-}DEVICE_EXTENSION, *PDEVICE_EXTENSION;
-
 typedef	struct _PENDING_IRP_ENTRY
 {
 	PIRP		pIrp;
@@ -82,6 +73,10 @@ NTSTATUS	CreateDevice(PDRIVER_OBJECT pDriverObject)
 
 	KeInitializeSpinLock(&pDevExt->spinLock);
 
+	KeInitializeTimer(&pDevExt->Timer);
+	
+	KeInitializeDpc(&pDevExt->Dpc, CustomDpc, pDevObj);
+
 	return status;
 }
 
@@ -122,6 +117,8 @@ NTSTATUS	MyDevIoCtrlDispatch(PDEVICE_OBJECT pDevObj, PIRP pIrp)
 {
 	PIO_STACK_LOCATION			irpSp;
 	ULONG						ulCtrlCode;
+	PDEVICE_EXTENSION			pDevExt = (PDEVICE_EXTENSION)pDevObj->DeviceExtension;
+	LARGE_INTEGER				liDueTime;
 
 	irpSp = IoGetCurrentIrpStackLocation(pIrp);
 	ulCtrlCode = irpSp->Parameters.DeviceIoControl.IoControlCode;
@@ -130,6 +127,13 @@ NTSTATUS	MyDevIoCtrlDispatch(PDEVICE_OBJECT pDevObj, PIRP pIrp)
 	{
 	case IOCTRL_FAST_MUTEX:
 		FastMutexTest();
+		break;
+	case IOCTRL_START_TIMER:
+		liDueTime = RtlConvertLongToLargeInteger(-2*10*1000*1000);
+		KeSetTimer(&pDevExt->Timer, liDueTime, &pDevExt->Dpc);
+		break;
+	case IOCTRL_STOP_TIMER:
+		KeCancelTimer(&pDevExt->Timer);
 		break;
 	}
 

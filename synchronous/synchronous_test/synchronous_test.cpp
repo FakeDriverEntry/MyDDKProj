@@ -26,6 +26,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	AsynchronousTest();
 
+	DpcTest();
+
 	printf("press any key to uninstall device...\n");
 	_getch();
 

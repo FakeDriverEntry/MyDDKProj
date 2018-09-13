@@ -5,5 +5,6 @@
 
 void	KernelMutexObjectTest();
 void	AsynchronousTest();
+void	DpcTest();
 
 #endif

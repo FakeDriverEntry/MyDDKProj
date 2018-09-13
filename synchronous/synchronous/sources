@@ -3,5 +3,6 @@ TARGETTYPE=DRIVER
 
 
 SOURCES=main.c \
-		mutex.c
+		mutex.c \
+		dpc.c
 
