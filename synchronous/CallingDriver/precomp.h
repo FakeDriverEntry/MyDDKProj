@@ -4,6 +4,7 @@
 #include <ntddk.h>
 #include "CallingDriver.h"
 #include "ioctrl_code.h"
+#include "operations.h"
 
 
 typedef	struct _DEVICE_EXTENSION
