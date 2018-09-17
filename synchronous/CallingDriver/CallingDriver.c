@@ -85,6 +85,8 @@ NTSTATUS	MyDeviceIoControl(PDEVICE_OBJECT pDevObj, PIRP pIrp)
 	NTSTATUS			ntStatus;
 	ULONG				ulCtrlCode;
 	PIO_STACK_LOCATION	irpSp;
+
+	ulCtrlCode = irpSp->Parameters.DeviceIoControl.IoControlCode;
 }
 
 NTSTATUS	DriverEntry(PDRIVER_OBJECT pDriverObject, PUNICODE_STRING pRegPath)
