@@ -1,0 +1,6 @@
+TARGETNAME=TargetDriver
+TARGETTYPE=DRIVER
+
+
+SOURCES=CallingDriver.c
+
