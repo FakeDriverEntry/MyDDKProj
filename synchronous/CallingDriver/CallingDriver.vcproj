@@ -69,6 +69,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\operations.c"
+				>
+			</File>
+			<File
 				RelativePath=".\sources"
 				>
 			</File>
@@ -84,6 +88,10 @@
 			</File>
 			<File
 				RelativePath=".\ioctrl_code.h"
+				>
+			</File>
+			<File
+				RelativePath=".\operations.h"
 				>
 			</File>
 			<File
