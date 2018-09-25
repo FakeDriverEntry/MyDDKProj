@@ -34,10 +34,10 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	bRet = DeviceIoControl(hDevice, IOCTL_USING_SYNCHRONIZE, NULL, 0, NULL, 0, &dwRet, NULL);
 
-	printf("Press Any Key to test using io completion read ...\n");
-	_getch();
+	//printf("Press Any Key to test using io completion read ...\n");
+	//_getch();
 
-	bRet = DeviceIoControl(hDevice, IOCTL_USING_IO_COMPLETION, NULL, 0, NULL, 0, &dwRet, NULL);
+	//bRet = DeviceIoControl(hDevice, IOCTL_USING_IO_COMPLETION, NULL, 0, NULL, 0, &dwRet, NULL);
 
 	printf("Press Any Key to test using file pointer read ...\n");
 	_getch();

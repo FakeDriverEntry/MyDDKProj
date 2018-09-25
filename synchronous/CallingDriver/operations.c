@@ -157,7 +157,7 @@ VOID	UsingFilePointer()
 
 		if (!NT_SUCCESS(ntStatus))
 		{
-			KdPrint(("obtain device object by device handle failed ...\n"));
+			KdPrint(("obtain device object by device handle failed : %x\n", ntStatus));
 			return;
 		}
 
