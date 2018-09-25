@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TargetDriver", "TargetDrive
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CallingDriver", "CallingDriver\CallingDriver.vcproj", "{0119F2B6-F1D8-4FF6-A956-DDC423762DD3}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CallingDriverConsole", "CallingDriverConsole\CallingDriverConsole.vcproj", "{1E0ED073-8BA7-4243-99ED-5359469F8E97}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -31,6 +33,10 @@ Global
 		{0119F2B6-F1D8-4FF6-A956-DDC423762DD3}.Debug|Win32.Build.0 = Debug|Win32
 		{0119F2B6-F1D8-4FF6-A956-DDC423762DD3}.Release|Win32.ActiveCfg = Release|Win32
 		{0119F2B6-F1D8-4FF6-A956-DDC423762DD3}.Release|Win32.Build.0 = Release|Win32
+		{1E0ED073-8BA7-4243-99ED-5359469F8E97}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1E0ED073-8BA7-4243-99ED-5359469F8E97}.Debug|Win32.Build.0 = Debug|Win32
+		{1E0ED073-8BA7-4243-99ED-5359469F8E97}.Release|Win32.ActiveCfg = Release|Win32
+		{1E0ED073-8BA7-4243-99ED-5359469F8E97}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

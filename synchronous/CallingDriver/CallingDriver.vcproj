@@ -69,6 +69,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\CallingDriverConsole\LoadDriver.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\operations.c"
 				>
 			</File>
@@ -88,6 +92,10 @@
 			</File>
 			<File
 				RelativePath=".\ioctrl_code.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CallingDriverConsole\LoadDriver.h"
 				>
 			</File>
 			<File
