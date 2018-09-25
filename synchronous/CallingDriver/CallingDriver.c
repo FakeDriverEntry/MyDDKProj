@@ -1,5 +1,9 @@
 #include "precomp.h"
 
+const	WCHAR		wszDevName[] = L"\\Device\\CallingDevice";
+const	WCHAR		wszSymName[] = L"\\DosDevices\\CallingDevice";
+
+
 VOID	DriverUnload(PDRIVER_OBJECT pDriverObject)
 {
 	PDEVICE_OBJECT		pDevObj;
@@ -82,11 +86,34 @@ NTSTATUS	DefaultDispatch(PDEVICE_OBJECT pDevObj, PIRP pIrp)
 
 NTSTATUS	MyDeviceIoControl(PDEVICE_OBJECT pDevObj, PIRP pIrp)
 {
-	NTSTATUS			ntStatus;
+	NTSTATUS			ntStatus = STATUS_SUCCESS;
 	ULONG				ulCtrlCode;
 	PIO_STACK_LOCATION	irpSp;
 
+	irpSp = IoGetCurrentIrpStackLocation(pIrp);
+
 	ulCtrlCode = irpSp->Parameters.DeviceIoControl.IoControlCode;
+
+	switch(ulCtrlCode)
+	{
+	
+	case IOCTL_USING_SYNCHRONIZE:
+		SynchronizeRead();
+		break;
+
+	case IOCTL_USING_IO_COMPLETION:
+		UsingIoCompletion();
+		break;
+
+	case IOCTL_USING_FILE_POINTER:
+		UsingFilePointer();
+		break;
+	}
+
+	pIrp->IoStatus.Status = ntStatus;
+	pIrp->IoStatus.Information = 0;
+	IoCompleteRequest(pIrp, IO_NO_INCREMENT);
+	return ntStatus;
 }
 
 NTSTATUS	DriverEntry(PDRIVER_OBJECT pDriverObject, PUNICODE_STRING pRegPath)

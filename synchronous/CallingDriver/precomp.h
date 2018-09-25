@@ -14,7 +14,5 @@ typedef	struct _DEVICE_EXTENSION
 	UNICODE_STRING		ustrSymName;
 }DEVICE_EXTENSION, *PDEVICE_EXTENSION;
 
-const	WCHAR		wszDevName[] = L"\\Device\\CallingDevice";
-const	WCHAR		wszSymName[] = L"\\DosDevices\\CallingDevice";
 
 #endif
