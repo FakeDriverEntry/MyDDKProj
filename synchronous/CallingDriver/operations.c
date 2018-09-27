@@ -173,3 +173,71 @@ VOID	UsingFilePointer()
 	ZwClose(hDevice);
 
 }
+
+VOID	UsingSymbolicLinkOpenDevice()
+{
+	UNICODE_STRING			ustrSymName;
+	UNICODE_STRING			ustrDevName;
+	OBJECT_ATTRIBUTES		oaSym;
+	OBJECT_ATTRIBUTES		oaDev;
+	HANDLE					hDevice;
+	HANDLE					hSymbolicLink;
+	NTSTATUS				ntStatus;
+	ULONG					ulDevNameLen;
+	IO_STATUS_BLOCK			ioStatus;
+	LARGE_INTEGER			liOffset;
+
+	RtlInitUnicodeString(&ustrSymName, L"\\??\\TargetDevice");
+
+	InitializeObjectAttributes(&oaSym, &ustrSymName, OBJ_CASE_INSENSITIVE|OBJ_KERNEL_HANDLE, NULL, NULL);
+
+	ntStatus = ZwOpenSymbolicLinkObject(&hSymbolicLink, FILE_ALL_ACCESS, &oaSym);
+
+	if (ntStatus != STATUS_SUCCESS)
+	{
+		KdPrint(("ZwOpenSymbolicLinkObject failed : %x\n", ntStatus));
+		return;
+	}
+
+	ustrDevName.Buffer = ExAllocatePool(PagedPool, DEV_NAME_LEN);
+	ustrDevName.Length = ustrSymName.MaximumLength = DEV_NAME_LEN;
+
+	ntStatus = ZwQuerySymbolicLinkObject(hSymbolicLink, &ustrDevName, &ulDevNameLen);
+
+	if (ntStatus != STATUS_SUCCESS)
+	{
+		KdPrint(("ZwQuerySymbolicLinkObject failed : %x\n"));
+		return;
+	}
+
+	InitializeObjectAttributes(&oaDev, &ustrDevName, OBJ_CASE_INSENSITIVE, NULL, NULL);
+
+	ntStatus = ZwCreateFile(&hDevice, 
+		FILE_READ_ATTRIBUTES|SYNCHRONIZE,
+		&oaDev,
+		&ioStatus,
+		NULL, 
+		FILE_ATTRIBUTE_NORMAL,
+		FILE_SHARE_READ,
+		FILE_OPEN_IF,
+		FILE_SYNCHRONOUS_IO_NONALERT, 
+		NULL, 
+		0);
+
+	if (!NT_SUCCESS(ntStatus))
+	{
+		KdPrint(("ZwCreateFile failed : %x\n", ntStatus));
+		return;
+	}
+
+	liOffset = RtlConvertLongToLargeInteger(0);
+
+	KdPrint(("begin to synchronously read target device ...\n"));
+
+	ntStatus = ZwReadFile(hDevice, NULL, NULL, NULL, &ioStatus, NULL, 0, &liOffset, NULL);
+
+	KdPrint(("synchronously read target has finished ...\n"));
+
+	return;
+	
+}
