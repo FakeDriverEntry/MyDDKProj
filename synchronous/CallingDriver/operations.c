@@ -40,7 +40,7 @@ VOID	SynchronizeRead()
 	ZwClose(hDevice);
 }
 
-VOID	CompleteTargetDriver_Read(PVOID Context, PIO_STATUS_BLOCK pStatus_Block)
+VOID	CompleteTargetDriver_Read(PVOID Context, PIO_STATUS_BLOCK pStatus_Block, ULONG ul)
 {
 	KdPrint(("TargetDriver has completed the read irp ...\n"));
 	KeSetEvent((PKEVENT)Context, IO_NO_INCREMENT, FALSE);
@@ -149,10 +149,10 @@ VOID	UsingFilePointer()
 	if (STATUS_PENDING == ntStatus)
 	{
 		ntStatus = ObReferenceObjectByHandle(hDevice, 
-			EVENT_MODIFY_STATE,
-			*ExEventObjectType,
+			FILE_READ_DATA,
+			*IoFileObjectType,
 			KernelMode,
-			(PVOID)&pFileObject,
+			(PVOID*)&pFileObject,
 			NULL);
 
 		if (!NT_SUCCESS(ntStatus))

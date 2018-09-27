@@ -84,6 +84,18 @@ NTSTATUS	DefaultDispatch(PDEVICE_OBJECT pDevObj, PIRP pIrp)
 	return STATUS_SUCCESS;
 }
 
+NTSTATUS	MyReadDispatch(PDEVICE_OBJECT pDevObj, PIRP pIrp)
+{
+	NTSTATUS		ntStatus = STATUS_SUCCESS;
+
+	UsingIoCompletion();
+
+	pIrp->IoStatus.Status = ntStatus;
+	pIrp->IoStatus.Information = 0;
+	IoCompleteRequest(pIrp, IO_NO_INCREMENT);
+	return ntStatus;
+}
+
 NTSTATUS	MyDeviceIoControl(PDEVICE_OBJECT pDevObj, PIRP pIrp)
 {
 	NTSTATUS			ntStatus = STATUS_SUCCESS;
@@ -129,6 +141,8 @@ NTSTATUS	DriverEntry(PDRIVER_OBJECT pDriverObject, PUNICODE_STRING pRegPath)
 	}
 
 	pDriverObject->MajorFunction[IRP_MJ_DEVICE_CONTROL] = MyDeviceIoControl;
+
+	pDriverObject->MajorFunction[IRP_MJ_READ] = MyReadDispatch;
 
 	ntStatus = CreateDevice(pDriverObject);
 
