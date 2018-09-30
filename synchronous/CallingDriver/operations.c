@@ -241,3 +241,81 @@ VOID	UsingSymbolicLinkOpenDevice()
 	return;
 	
 }
+
+NTSTATUS	BuildSyncIrp()
+{
+	PIRP				pNewIrp;
+	PDEVICE_OBJECT		pDevObj;
+	PFILE_OBJECT		pFileObject;
+	UNICODE_STRING		ustrDevName;
+	NTSTATUS			ntStatus;
+	KEVENT				event;
+	IO_STATUS_BLOCK		ioStatus;
+	LARGE_INTEGER		liOffset;
+	PIO_STACK_LOCATION	pNextStack;
+
+	RtlInitUnicodeString(&ustrDevName, L"\\Device\\TargetDevice");
+
+	ntStatus = IoGetDeviceObjectPointer(&ustrDevName, FILE_ALL_ACCESS, &pFileObject, &pDevObj);
+
+	if (ntStatus != STATUS_SUCCESS)
+	{
+		KdPrint(("IoGetDeviceObjectPointer failed : %x\n", ntStatus));
+		return ntStatus;
+	}
+
+	KeInitializeEvent(&event, NotificationEvent, FALSE);
+
+	liOffset = RtlConvertLongToLargeInteger(0);
+
+	pNewIrp = IoBuildSynchronousFsdRequest(IRP_MJ_READ,
+		pDevObj,
+		NULL,
+		0,
+		&liOffset,
+		&event,
+		&ioStatus);
+
+	if (pNewIrp == NULL)
+	{
+		KdPrint(("IoBuildSynchronousFsdRequest failed ...\n"));
+		return STATUS_UNSUCCESSFUL;
+	}
+
+	pNextStack = IoGetNextIrpStackLocation(pNewIrp);
+
+	pNextStack->FileObject = pFileObject;
+
+	ntStatus = IoCallDriver(pDevObj, pNewIrp);
+
+	if (ntStatus == STATUS_PENDING)
+	{
+		KdPrint(("IRP_MJ_READ is being pended ...\n"));
+
+		KeWaitForSingleObject(&event, Executive, KernelMode, FALSE, NULL);
+
+		KdPrint(("IRP_MJ_READ has been completed ...\n"));
+
+		ntStatus = ioStatus.Status;
+	}
+
+	ObDereferenceObject(pFileObject);
+
+	return ntStatus;
+}
+
+VOID	BuildAsyncIrp()
+{
+	NTSTATUS			ntStatus;
+	PIRP				pNewIrp;
+	PFILE_OBJECT		pFileObject;
+	PDEVICE_OBJECT		pDeviceObject;
+	LARGE_INTEGER		liOffset;
+	KEVENT				my_event;
+	PIO_STACK_LOCATION	pNextStack;
+	UNICODE_STRING		ustrDevName;
+
+	RtlInitUnicodeString(&ustrDevName, L"\\Device\\TargetDevice");
+
+	ntStatus = IoGetDeviceObjectPointer(&ustrDevName, FILE_ALL_ACCESS, &pFileObject, &pDeviceObject);
+}

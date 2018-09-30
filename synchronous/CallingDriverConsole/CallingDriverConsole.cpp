@@ -46,6 +46,11 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	bRet = DeviceIoControl(hDevice, IOCTL_USING_FILE_POINTER, NULL, 0, NULL, 0, &dwRet, NULL);
 
+	printf("Press Any Key to test using symbolic link object to test device ...\n");
+	_getch();
+
+	bRet = DeviceIoControl(hDevice, IOCTL_USING_SYMBOLICOBJECT, NULL, 0, NULL, 0, &dwRet, NULL);
+
 	printf("Press Any Key to unload Calling driver ...\n");
 	_getch();
 

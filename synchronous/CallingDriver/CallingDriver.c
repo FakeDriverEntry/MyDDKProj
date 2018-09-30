@@ -120,6 +120,10 @@ NTSTATUS	MyDeviceIoControl(PDEVICE_OBJECT pDevObj, PIRP pIrp)
 	case IOCTL_USING_FILE_POINTER:
 		UsingFilePointer();
 		break;
+
+	case IOCTL_USING_SYMBOLICOBJECT:
+		UsingSymbolicLinkOpenDevice();
+		break;
 	}
 
 	pIrp->IoStatus.Status = ntStatus;

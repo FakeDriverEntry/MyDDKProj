@@ -11,4 +11,9 @@ VOID		UsingFilePointer();
 
 VOID		UsingSymbolicLinkOpenDevice();
 
+NTSTATUS	BuildSyncIrp();
+
+NTSTATUS	BuildAsyncIrp();
+
+
 #endif
