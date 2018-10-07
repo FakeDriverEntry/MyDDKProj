@@ -314,8 +314,107 @@ VOID	BuildAsyncIrp()
 	KEVENT				my_event;
 	PIO_STACK_LOCATION	pNextStack;
 	UNICODE_STRING		ustrDevName;
+	IO_STATUS_BLOCK		ioStatus;
 
 	RtlInitUnicodeString(&ustrDevName, L"\\Device\\TargetDevice");
 
 	ntStatus = IoGetDeviceObjectPointer(&ustrDevName, FILE_ALL_ACCESS, &pFileObject, &pDeviceObject);
+
+	if (!NT_SUCCESS(ntStatus))
+	{
+		KdPrint(("IoGetDeviceObjectPointer failed : %x\n", ntStatus));
+		return;
+	}
+
+	KeInitializeEvent(&my_event, NotificationEvent, FALSE);
+
+	liOffset = RtlConvertLongToLargeInteger(0);
+
+	pNewIrp = IoBuildAsynchronousFsdRequest(IRP_MJ_READ, pDeviceObject, NULL, 0, &liOffset, &ioStatus);
+
+	if (pNewIrp == NULL)
+	{
+		KdPrint(("IoBuildAsynchronousFsdRequest failed ...\n"));
+		return;
+	}
+
+	pNewIrp->UserEvent = &my_event;
+
+	pNextStack = IoGetNextIrpStackLocation(pNewIrp);
+
+	pNextStack->FileObject = pFileObject;
+
+	ntStatus = IoCallDriver(pDeviceObject, pNewIrp);
+
+	if (ntStatus == STATUS_PENDING)
+	{
+		KdPrint(("IoCallDriver read irp is being pended ...\n"));
+		
+		KeWaitForSingleObject(&my_event, Executive, KernelMode, FALSE, NULL);
+
+		KdPrint(("IoCallDriver read irp has returned ...\n"));
+	}
+
+	ZwClose(pFileObject);
+
+	ObDereferenceObject(pFileObject);
+
+	return;
+}
+
+VOID	AllocateIrp()
+{
+	NTSTATUS			ntStatus;
+	PFILE_OBJECT		pFileObject;
+	PDEVICE_OBJECT		pDeviceObject;
+	IO_STATUS_BLOCK		ioStatus;
+	PIRP				pNewIrp;
+	KEVENT				my_event;
+	UNICODE_STRING		ustrDevName;
+	PIO_STACK_LOCATION	pNextStack;
+
+	RtlInitUnicodeString(&ustrDevName, L"\\Device\\TargetDevice");
+
+	ntStatus = IoGetDeviceObjectPointer(&ustrDevName, FILE_ALL_ACCESS, &pFileObject, &pDeviceObject);
+
+	if (!NT_SUCCESS(ntStatus))
+	{
+		KdPrint(("IoGetDeviceObjectPointer failed ...\n"));
+		return;
+	}
+
+	KeInitializeEvent(&my_event, NotificationEvent, FALSE);
+
+	pNewIrp = IoAllocateIrp(pDeviceObject->StackSize, FALSE);
+
+	pNewIrp->UserEvent = &my_event;
+
+	pNewIrp->IoStatus = &ioStatus;
+
+	pNewIrp->Tail.Overlay.Thread = PsGetCurrentThread();
+
+	pNewIrp->AssociatedIrp.SystemBuffer = NULL;
+
+	pNextStack = IoGetNextIrpStackLocation(pNewIrp);
+
+	pNextStack->MajorFunction = IRP_MJ_READ;
+
+	pNextStack->MinorFunction = IRP_MN_NORMAL;
+
+	pNextStack->FileObject = pFileObject;
+
+	ntStatus = IoCallDriver(pDeviceObject, pNewIrp);
+
+	if (ntStatus == STATUS_PENDING)
+	{
+		KdPrint(("IoCallDriver read irp is being pended ...\n"));
+
+		KeWaitForSingleObject(&my_event, Executive, KernelMode, FALSE, NULL);
+
+		KdPrint(("IoCallDriver read irp has returned ...\n"));
+	}
+
+	ObDereferenceObject(pFileObject);
+
+	return;
 }

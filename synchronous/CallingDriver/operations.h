@@ -13,7 +13,9 @@ VOID		UsingSymbolicLinkOpenDevice();
 
 NTSTATUS	BuildSyncIrp();
 
-NTSTATUS	BuildAsyncIrp();
+VOID		BuildAsyncIrp();
+
+VOID		AllocateIrp();
 
 
 #endif
