@@ -74,6 +74,9 @@ NTSTATUS	CreateDevice(PDRIVER_OBJECT pDriverObject)
 	KeInitializeTimer(&pDevExt->Timer);
 	KeInitializeDpc(&pDevExt->Dpc, CompletePendingIrpDpc, pDevObj);
 
+	//	´òÓ¡DeviceObjectµÄµØÖ·
+	KdPrint(("target device object address : %x\n", pDevObj));
+
 	return ntStatus;
 }
 
