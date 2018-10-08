@@ -62,6 +62,7 @@ VOID	UsingIoCompletion()
 
 	liOffset = RtlConvertLongToLargeInteger(0);
 
+	// 获得设备对象句柄
 	ntStatus = ZwCreateFile(&hDevice,
 		FILE_READ_ATTRIBUTES,
 		&oa,
@@ -87,6 +88,7 @@ VOID	UsingIoCompletion()
 		SynchronizationEvent,		
 		FALSE);
 
+	//	将完成例程的地址作为ZwReadFile的APC Routine参数，当下一层设备对象完成IRP后，该完成例程会被调用
 	ntStatus = ZwReadFile(hDevice,
 		NULL, 
 		CompleteTargetDriver_Read, 
@@ -126,6 +128,7 @@ VOID	UsingFilePointer()
 
 	liOffset = RtlConvertLongToLargeInteger(0);
 
+	// 获得设备对象的句柄
 	ntStatus = ZwCreateFile(&hDevice,
 		FILE_READ_ATTRIBUTES,
 		&oa,
@@ -144,10 +147,12 @@ VOID	UsingFilePointer()
 		return;
 	}
 
+	// 异步读操作，会立即返回
 	ntStatus = ZwReadFile(hDevice, NULL, NULL, NULL, &io_status, NULL, 0, &liOffset, NULL);
 
 	if (STATUS_PENDING == ntStatus)
 	{
+		// 通过设备对象句柄获得该设备的文件对象指针
 		ntStatus = ObReferenceObjectByHandle(hDevice, 
 			FILE_READ_DATA,
 			*IoFileObjectType,
@@ -163,6 +168,7 @@ VOID	UsingFilePointer()
 
 		KdPrint(("wait for asynchronous read return ...\n"));
 
+		// 在文件对象指针的Event成员进行等待，当底层IRP完成后会将该事件设置为受信状态，程序继续运行
 		KeWaitForSingleObject(&pFileObject->Event, Executive, KernelMode, FALSE, NULL);
 
 		KdPrint(("asynchronous read has return ...\n"));
@@ -187,10 +193,13 @@ VOID	UsingSymbolicLinkOpenDevice()
 	IO_STATUS_BLOCK			ioStatus;
 	LARGE_INTEGER			liOffset;
 
+	//	创建符号链接的字符串
 	RtlInitUnicodeString(&ustrSymName, L"\\??\\TargetDevice");
 
+	//	初始化对象属性
 	InitializeObjectAttributes(&oaSym, &ustrSymName, OBJ_CASE_INSENSITIVE|OBJ_KERNEL_HANDLE, NULL, NULL);
 
+	//	获得符号链接的句柄
 	ntStatus = ZwOpenSymbolicLinkObject(&hSymbolicLink, FILE_ALL_ACCESS, &oaSym);
 
 	if (ntStatus != STATUS_SUCCESS)
@@ -202,6 +211,7 @@ VOID	UsingSymbolicLinkOpenDevice()
 	ustrDevName.Buffer = ExAllocatePool(PagedPool, DEV_NAME_LEN);
 	ustrDevName.Length = ustrSymName.MaximumLength = DEV_NAME_LEN;
 
+	//	通过符号链接句柄获得设备对象名的字符串
 	ntStatus = ZwQuerySymbolicLinkObject(hSymbolicLink, &ustrDevName, &ulDevNameLen);
 
 	if (ntStatus != STATUS_SUCCESS)
@@ -268,6 +278,7 @@ NTSTATUS	BuildSyncIrp()
 
 	liOffset = RtlConvertLongToLargeInteger(0);
 
+	//	创建同步IRP，将通知事件作为参数传入该函数，当底层设备对象完成IRP后将设置该事件为受信状态
 	pNewIrp = IoBuildSynchronousFsdRequest(IRP_MJ_READ,
 		pDevObj,
 		NULL,
@@ -338,6 +349,7 @@ VOID	BuildAsyncIrp()
 		return;
 	}
 
+	//	将通知事件的地址作为新创建的IRP的UserEvent成员，当底层IRP完成后会将该事件设置为受信状态
 	pNewIrp->UserEvent = &my_event;
 
 	pNextStack = IoGetNextIrpStackLocation(pNewIrp);
@@ -387,9 +399,11 @@ VOID	AllocateIrp()
 
 	pNewIrp = IoAllocateIrp(pDeviceObject->StackSize, FALSE);
 
+
+	//	将通知事件的地址作为新创建的IRP的UserEvent成员，当底层IRP完成后会将该事件设置为受信状态
 	pNewIrp->UserEvent = &my_event;
 
-	pNewIrp->IoStatus = &ioStatus;
+	pNewIrp->UserIosb = &ioStatus;
 
 	pNewIrp->Tail.Overlay.Thread = PsGetCurrentThread();
 
