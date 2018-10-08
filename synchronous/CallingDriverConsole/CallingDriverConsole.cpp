@@ -51,6 +51,26 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	bRet = DeviceIoControl(hDevice, IOCTL_USING_SYMBOLICOBJECT, NULL, 0, NULL, 0, &dwRet, NULL);
 
+	printf("Press Any Key to test build sync irp ...\n");
+	_getch();
+
+	bRet = DeviceIoControl(hDevice, IOCTL_BUILD_SYNCIRP, NULL, 0, NULL, 0, &dwRet, NULL);
+
+	printf("Press Any Key to test build async irp ...\n");
+	_getch();
+
+	bRet = DeviceIoControl(hDevice, IOCTL_BUILD_ASYNCIRP, NULL, 0, NULL, 0, &dwRet, NULL);
+
+	printf("Press Any Key to test allocate irp ...\n");
+	_getch();
+
+	bRet = DeviceIoControl(hDevice, IOCTL_ALLOCATE_IRP, NULL, 0, NULL, 0, &dwRet, NULL);
+
+	printf("Press Any Key to test get device object by name ...\n");
+	_getch();
+
+	bRet = DeviceIoControl(hDevice, IOCTL_GETDEVICE_BY_NAME, NULL, 0, NULL, 0, &dwRet, NULL);
+
 	printf("Press Any Key to unload Calling driver ...\n");
 	_getch();
 

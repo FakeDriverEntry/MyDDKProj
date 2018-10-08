@@ -124,6 +124,22 @@ NTSTATUS	MyDeviceIoControl(PDEVICE_OBJECT pDevObj, PIRP pIrp)
 	case IOCTL_USING_SYMBOLICOBJECT:
 		UsingSymbolicLinkOpenDevice();
 		break;
+
+	case IOCTL_BUILD_SYNCIRP:
+		BuildSyncIrp();
+		break;
+		
+	case IOCTL_BUILD_ASYNCIRP:
+		BuildAsyncIrp();
+		break;
+
+	case IOCTL_ALLOCATE_IRP:
+		AllocateIrp();
+		break;
+
+	case IOCTL_GETDEVICE_BY_NAME:
+		GetDevObjByName();
+		break;
 	}
 
 	pIrp->IoStatus.Status = ntStatus;

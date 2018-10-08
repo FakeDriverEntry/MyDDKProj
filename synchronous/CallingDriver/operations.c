@@ -399,7 +399,6 @@ VOID	AllocateIrp()
 
 	pNewIrp = IoAllocateIrp(pDeviceObject->StackSize, FALSE);
 
-
 	//	将通知事件的地址作为新创建的IRP的UserEvent成员，当底层IRP完成后会将该事件设置为受信状态
 	pNewIrp->UserEvent = &my_event;
 
@@ -431,4 +430,32 @@ VOID	AllocateIrp()
 	ObDereferenceObject(pFileObject);
 
 	return;
+}
+
+VOID	GetDevObjByName()
+{
+	UNICODE_STRING			ustrSymName;
+	PDEVICE_OBJECT			pDevObj;
+	NTSTATUS				ntStatus;
+
+
+	
+	RtlInitUnicodeString(&ustrSymName, L"\\??\\TargetDevice");
+
+	ntStatus = ObReferenceObjectByName(&ustrSymName,
+		OBJ_CASE_INSENSITIVE,
+		NULL,
+		FILE_ALL_ACCESS,
+		*IoDriverObjectType,
+		KernelMode,
+		NULL,
+		(PVOID*)&pDevObj);
+
+	if (!NT_SUCCESS(ntStatus))
+	{
+		KdPrint(("ObReferenceObjectByName failed : %x\n", ntStatus));
+		return;
+	}
+
+	KdPrint(("target device's device object address : %x\n", pDevObj));
 }

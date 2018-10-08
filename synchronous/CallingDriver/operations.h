@@ -17,5 +17,6 @@ VOID		BuildAsyncIrp();
 
 VOID		AllocateIrp();
 
+VOID		GetDevObjByName();
 
 #endif
