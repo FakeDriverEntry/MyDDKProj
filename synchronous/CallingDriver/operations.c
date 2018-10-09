@@ -367,7 +367,7 @@ VOID	BuildAsyncIrp()
 		KdPrint(("IoCallDriver read irp has returned ...\n"));
 	}
 
-	ZwClose(pFileObject);
+	//ZwClose(pFileObject);
 
 	ObDereferenceObject(pFileObject);
 
@@ -446,7 +446,7 @@ VOID	GetDevObjByName()
 		OBJ_CASE_INSENSITIVE,
 		NULL,
 		FILE_ALL_ACCESS,
-		*IoDriverObjectType,
+		IoDeviceObjectType,
 		KernelMode,
 		NULL,
 		(PVOID*)&pDevObj);
