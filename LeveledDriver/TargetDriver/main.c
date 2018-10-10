@@ -61,6 +61,10 @@ VOID	DpcRoutine(PKDPC pDpc, PVOID pContext, PVOID SysArg1, PVOID SysArg2)
 
 	pPendedIrp = pDevExt->pPendedIrp;
 
+	pPendedIrp->IoStatus.Status = STATUS_SUCCESS;
+
+	pPendedIrp->IoStatus.Information = 0;
+
 	IoCompleteRequest(pPendedIrp, IO_NO_INCREMENT);
 
 	KdPrint(("count-down time has been reached and the pended irp has been complete ...\n"));
@@ -135,7 +139,55 @@ NTSTATUS	ReadDispatchRoutine(PDEVICE_OBJECT pDevObj, PIRP pIrp)
 	PDEVICE_EXTENSION		pDevExt;
 	LARGE_INTEGER			liWaitTime;
 	
+	
+	pDevExt = (PDEVICE_EXTENSION)pDevObj->DeviceExtension;
+
+	KdPrint(("entering target device's read dispatch routine ...\n"));
+
+	IoMarkIrpPending(pIrp);
+
+	pDevExt->pPendedIrp = pIrp;
+
+	liWaitTime = RtlConvertLongToLargeInteger(-30000000);
+
+	KeSetTimer(&pDevExt->readRoutineTimer, liWaitTime, &pDevExt->readRoutineDpc);
+
+	KdPrint(("leaving target device's read dispatch routine ...\n"));
+
+	return STATUS_PENDING;
+}
+
+NTSTATUS	DriverEntry(PDRIVER_OBJECT pDriverObject, PUNICODE_STRING pustrRegPath)
+{
+	NTSTATUS			ntStatus;
+	ULONG				ulIndex;
+	PDEVICE_EXTENSION	pDevExt;
+	PDEVICE_OBJECT		pDevObj;
+
+	for (ulIndex = 0; ulIndex<IRP_MJ_MAXIMUM_FUNCTION; ulIndex++)
+	{
+		pDriverObject->MajorFunction[ulIndex] = CommonDispatchRoutine;
+	}
+
+	pDriverObject->MajorFunction[IRP_MJ_CREATE] = CreateDispatchRoutine;
+	pDriverObject->MajorFunction[IRP_MJ_CLOSE] = CloseDispatchRoutine;
+	pDriverObject->MajorFunction[IRP_MJ_READ] = ReadDispatchRoutine;
+	pDriverObject->DriverUnload = DriverUnload;
+
+	ntStatus = CreateDevice(pDriverObject);
+
+	if (!NT_SUCCESS(ntStatus))
+	{
+		return ntStatus;
+	}
+
+	pDevObj = pDriverObject->DeviceObject;
 
 	pDevExt = (PDEVICE_EXTENSION)pDevObj->DeviceExtension;
 
+	KeInitializeDpc(&pDevExt->readRoutineDpc, DpcRoutine, pDevObj);
+
+	KeInitializeTimer(&pDevExt->readRoutineTimer);
+
+	return ntStatus;
 }
