@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TargetDriver", "TargetDriver\TargetDriver.vcproj", "{FA93DAFA-7FBB-4142-BD91-F3627E039619}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FilterDriver", "FilterDriver\FilterDriver.vcproj", "{01B4A267-FFCB-4F2F-B8E5-CDEAE346721C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -13,6 +15,10 @@ Global
 		{FA93DAFA-7FBB-4142-BD91-F3627E039619}.Debug|Win32.Build.0 = Debug|Win32
 		{FA93DAFA-7FBB-4142-BD91-F3627E039619}.Release|Win32.ActiveCfg = Release|Win32
 		{FA93DAFA-7FBB-4142-BD91-F3627E039619}.Release|Win32.Build.0 = Release|Win32
+		{01B4A267-FFCB-4F2F-B8E5-CDEAE346721C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{01B4A267-FFCB-4F2F-B8E5-CDEAE346721C}.Debug|Win32.Build.0 = Debug|Win32
+		{01B4A267-FFCB-4F2F-B8E5-CDEAE346721C}.Release|Win32.ActiveCfg = Release|Win32
+		{01B4A267-FFCB-4F2F-B8E5-CDEAE346721C}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
