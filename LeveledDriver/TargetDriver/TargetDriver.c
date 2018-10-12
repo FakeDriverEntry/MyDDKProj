@@ -85,7 +85,7 @@ VOID	DriverUnload(PDRIVER_OBJECT pDriverObject)
 		ustrSymName = pDevExt->ustrSymName;
 		IoDeleteSymbolicLink(&ustrSymName);
 		pDevObj = pDevObj->NextDevice;
-		IoDetachDevice(pDevExt->pDevObj);
+		IoDeleteDevice(pDevExt->pDevObj);
 	}
 }
 

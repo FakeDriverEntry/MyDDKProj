@@ -66,7 +66,7 @@ VOID	DriverUnload(PDRIVER_OBJECT pDriverObject)
 			IoDetachDevice(pDevExt->pTargetDevice);
 		}
 		pDevObj = pDevObj->NextDevice;
-		IoDetachDevice(pDevExt->pDevObj);
+		IoDeleteDevice(pDevExt->pDevObj);
 	}
 }
 
@@ -84,7 +84,7 @@ NTSTATUS	CreateDispatchRoutine(PDEVICE_OBJECT pDevObj, PIRP pIrp)
 	
 	ntStatus = IoCallDriver(pDevExt->pTargetDevice, pIrp);
 
-	KdPrint(("Leaving Filter Device's read dispatch routine ...\n"));
+	KdPrint(("Leaving Filter Device's create dispatch routine ...\n"));
 
 	return ntStatus;
 }
