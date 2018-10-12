@@ -2,4 +2,4 @@ TARGETNAME=TargetDriver
 TARGETTYPE=DRIVER
 
 
-SOURCES=main.c
+SOURCES=TargetDriver.c
